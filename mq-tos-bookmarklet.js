@@ -7,17 +7,18 @@
     text = document.querySelector('[data-command-slug="levels_tv_intraday"], [data-command-slug="bl_levels"]')
     ?.querySelector('.data-text')
     ?.textContent.trim() ?? null;
+    if (text) return generateLevelsCodeAndPlaceOnClipboard(text, 'the levels found on the page');
 
+    
     /* Try selected text on the current page */
-    if (!text) text = window.getSelection().toString().trim();
+    text = window.getSelection().toString().trim();
+    if (text) return generateLevelsCodeAndPlaceOnClipboard(text, 'the selected text');
 
-    /* Simple, synchronous text grab successful, complete and exit */
-    if (text) return generateLevelsCodeAndPlaceOnClipboard(text);
-
+    
     /* We're still here, so try the clipboard, which needs to do the asynchronous dance */
     navigator.clipboard
 	.readText()
-	.then((clipText) => (result = generateLevelsCodeAndPlaceOnClipboard(clipText)))
+	.then((clipText) => (result = generateLevelsCodeAndPlaceOnClipboard(clipText, 'the clipboard')))
 	.catch((errorText) => (fail(errorText)));
     return result;
     
@@ -35,7 +36,7 @@
     }
     
     
-    function generateLevelsCodeAndPlaceOnClipboard(text) {    
+    function generateLevelsCodeAndPlaceOnClipboard(text, source) {    
 	const COLORS = {'Call Resistance': 'LIGHT_RED',
 			'Put Support': 'GREEN',
 			'HVL': 'VIOLET',
@@ -74,7 +75,8 @@
 	/* Text not returned, or fails sanity checks. Notify of failure and exit. */
 	if (!(text && isValid(text))) {
 	    fail('No usable text found, selected, nor on the clipboard.' +
-		 '\n\nPlease reload the page and try again.');
+		 '\n\nPlease reload the page and try again.' +
+		 '\n\nIf you are copied levels to the clipboard manually, you may need to copy them again before retrying.');
 	    return false;
 	}
 
@@ -90,17 +92,18 @@
 		'AddChartBubble(show, level' + i / 2 + ', "' + levels[i] + '", Color.' + COLORS[levels[i]] + ');\n';
 	}
 	
-	return writeClipboardText(result, isBlindSpotLevels);
+	return writeClipboardText(result, source, isBlindSpotLevels);
     }
 
     
-    async function writeClipboardText(text, isBlindSpotLevels) {
+    async function writeClipboardText(text, source, isBlindSpotLevels) {
 	try {
 	    await navigator.clipboard.writeText(text);
 	    toast('<p style="margin-bottom: 20px;">Updated ' + (isBlindSpotLevels ? 'blind spot' : 'GEX') +
-		  ' levels code has been placed on the clipboard.</p>' +
-		  '<p>Replace the entire ToS ' + (isBlindSpotLevels ? 'mq_bl' : 'mq_gex') +
-		  ' indicator script with the clipboard contents.</p>');
+		  ' levels code has been generated from ' + source + ' and placed on the clipboard.</p>' +
+		  '<p style="margin-bottom: 20px;">Replace the entire ToS ' + (isBlindSpotLevels ? 'mq_bl' : 'mq_gex') +
+		  ' indicator script with the clipboard contents.</p>' +
+		  '<p><a style="color: blue;" href="https://example.com">Click here for full instructions</a></p>');
 	    return true;
 	} catch (error) {
 	    console.error(error.message);
@@ -112,7 +115,7 @@
     
     async function toast(text) {
 	const TOAST_ID = '__sourdough_toast__';
-	const DURATION = 10000;
+	const DURATION = 12000;
 
 	/* Remove previous toast */
 	document.getElementById(TOAST_ID)?.remove();

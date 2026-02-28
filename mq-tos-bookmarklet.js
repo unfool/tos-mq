@@ -65,31 +65,37 @@
 			'BL 7': 'GREEN',
 			'BL 8': 'VIOLET',
 			'BL 9': 'ORANGE',
-			'BL 10': 'CYAN'};
+			'BL 10': 'CYAN'},
+	      NEWLINE = String.fromCharCode(10),  /* Avoid minifier wrecking newlines in generated code  */
+	      DOUBLE_NEWLINE = NEWLINE + NEWLINE;
 
 	var levels,
 	    isBlindSpotLevels,
 	    i,
-	    result = 'def bars_in_future = 3;\ndef show = !IsNaN(close[bars_in_future]) and IsNaN(close[bars_in_future - 1]);\n\n';
+	    result;
+
+	/* Static beginning of script */
+	result = 'def bars_in_future = 3;' + NEWLINE +
+	    'def show = !IsNaN(close[bars_in_future]) and IsNaN(close[bars_in_future - 1]);' + DOUBLE_NEWLINE;
 
 	/* Text not returned, or fails sanity checks. Notify of failure and exit. */
 	if (!(text && isValid(text))) {
-	    fail('No usable text found, selected, nor on the clipboard.' +
-		 '\n\nPlease reload the page and try again.' +
-		 '\n\nIf you copied levels to the clipboard manually, you may need to copy them again before retrying.');
+	    fail('No usable text found, selected, nor on the clipboard.' + DOUBLE_NEWLINE +
+		 'Please reload the page and try again.' + DOUBLE_NEWLINE +
+		 'If you copied levels to the clipboard manually, you may need to copy them again before retrying.');
 	    return false;
 	}
 
 	/* Parse the levels */
-	levels = text.slice(text.indexOf(':') + 2).replaceAll('\n', '').split(', '),
+	levels = text.slice(text.indexOf(':') + 2).replaceAll(NEWLINE, '').split(', '),
 	
 	isBlindSpotLevels = (levels[0].startsWith('BL'));
 	
 	for (i = 0; i < levels.length; i += 2) {
-	    result += '\ndef level' + i / 2 + ' = ' + levels[i + 1] + ';\n' +
-		'plot plot' + i / 2 + ' = level' + i / 2 + ';\n' +
-		'plot' + i / 2 + '.SetDefaultColor(Color.' + COLORS[levels[i]] + ');\n' +
-		'AddChartBubble(show, level' + i / 2 + ', "' + levels[i] + '", Color.' + COLORS[levels[i]] + ');\n';
+	    result += NEWLINE + 'def level' + i / 2 + ' = ' + levels[i + 1] + ';' + NEWLINE +
+		'plot plot' + i / 2 + ' = level' + i / 2 + ';' + NEWLINE +
+		'plot' + i / 2 + '.SetDefaultColor(Color.' + COLORS[levels[i]] + ');' + NEWLINE +
+		'AddChartBubble(show, level' + i / 2 + ', "' + levels[i] + '", Color.' + COLORS[levels[i]] + ');' + NEWLINE;
 	}
 	
 	return writeClipboardText(result, source, isBlindSpotLevels);

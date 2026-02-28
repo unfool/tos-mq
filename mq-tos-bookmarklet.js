@@ -76,7 +76,7 @@
 	if (!(text && isValid(text))) {
 	    fail('No usable text found, selected, nor on the clipboard.' +
 		 '\n\nPlease reload the page and try again.' +
-		 '\n\nIf you are copied levels to the clipboard manually, you may need to copy them again before retrying.');
+		 '\n\nIf you copied levels to the clipboard manually, you may need to copy them again before retrying.');
 	    return false;
 	}
 

@@ -105,11 +105,14 @@
     async function writeClipboardText(text, source, isBlindSpotLevels) {
 	try {
 	    await navigator.clipboard.writeText(text);
-	    toast('<p style="margin-bottom: 20px;">Updated ' + (isBlindSpotLevels ? 'blind spot' : 'GEX') +
-		  ' levels code has been generated from ' + source + ' and placed on the clipboard.</p>' +
-		  '<p style="margin-bottom: 20px;">Replace the entire ToS ' + (isBlindSpotLevels ? 'mq_bl' : 'mq_gex') +
+	    toast('<h1 style="margin-bottom: 20px;">Success!</h1>' + 
+		  '<p style="margin-bottom: 20px;">Generated <span style="color: gold; font-weight: bold">' +
+		    (isBlindSpotLevels ? 'blind spot' : 'GEX') + '</span>' +
+		  ' levels code from ' + source + '.</p>' +
+		  '<p style="margin-bottom: 30px;">Replace the entire ToS <span style="color: gold; font-weight: bold">' +
+		  (isBlindSpotLevels ? 'mq_bl' : 'mq_gex') + '</span>' +
 		  ' indicator script with the clipboard contents.</p>' +
-		  '<p><a style="color: blue;" href="https://example.com">Click here for full instructions</a></p>');
+		  '<p><a style="color: mediumblue" target="_blank" href="https://google.com">Click here for full instructions</a></p>');
 	    return true;
 	} catch (error) {
 	    console.error(error.message);
@@ -128,24 +131,23 @@
 
 	const toast = document.createElement('div');
 	toast.id = TOAST_ID;
-	/* toast.textContent = text;*/
 	toast.innerHTML = text;
+
+	/* clicking removes the toast immediately */
+	toast.onclick = function() {document.getElementById(TOAST_ID)?.remove();};
 	
 	Object.assign(toast.style, {
-	    /*position: 'absolute',*/
-	    position: 'fixed',
-	    top: '20px',
+	    position: 'fixed', 
+	    top: '2%',
 	    left: '30%',
-	    /*transform: 'translate(-50%, -50%)',*/
-	    background: '#cccc00',
-	    color: 'black',
+	    background: 'steelblue',
+	    color: 'white',
 	    padding: '10px 14px',
 	    borderRadius: '6px',
 	    font: '14px system-ui, sans-serif',
 	    zIndex: 2147483647,
 	    opacity: 0,
 	    transition: 'opacity 0.2s ease',
-	    pointerEvents: 'none'  /* Capture no clicks */
 	});
 
 	document.body.appendChild(toast);

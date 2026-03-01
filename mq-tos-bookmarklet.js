@@ -1,4 +1,5 @@
 (function() {
+    const VERSION = '1.0.0';
     var text,
 	result;
 
@@ -112,7 +113,8 @@
 		  '<p style="margin-bottom: 30px;">Replace the entire ToS <span style="color: gold; font-weight: bold">' +
 		  (isBlindSpotLevels ? 'mq_bl' : 'mq_gex') + '</span>' +
 		  ' indicator script with the clipboard contents.</p>' +
-		  '<p><a style="color: mediumblue" target="_blank" href="https://google.com">Click here for full instructions</a></p>');
+		  '<p style="margin-bottom: 20px;"><a style="color: mediumblue;" target="_blank" href="https://google.com">Click here for full instructions</a></p>' +
+		  '<p style="color: white; font-size: 70%"; ">Levelator v' + VERSION + '</p>');
 	    return true;
 	} catch (error) {
 	    console.error(error.message);

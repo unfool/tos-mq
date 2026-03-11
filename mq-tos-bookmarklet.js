@@ -8,12 +8,12 @@
     text = document.querySelector('[data-command-slug="levels_tv_intraday"], [data-command-slug="bl_levels"]')
     ?.querySelector('.data-text')
     ?.textContent.trim() ?? null;
-    if (text) return generateLevelsCodeAndPlaceOnClipboard(text, 'the levels found on the page');
+    if (text && isValid(text)) return generateLevelsCodeAndPlaceOnClipboard(text, 'the levels found on the page');
 
     
     /* Try selected text on the current page */
     text = window.getSelection().toString().trim();
-    if (text) return generateLevelsCodeAndPlaceOnClipboard(text, 'the selected text');
+    if (text && isValid(text)) return generateLevelsCodeAndPlaceOnClipboard(text, 'the selected text');
 
     
     /* We're still here, so try the clipboard, which needs to do the asynchronous dance */
@@ -114,7 +114,7 @@
 		  (isBlindSpotLevels ? 'mq_bl' : 'mq_gex') + '</span>' +
 		  ' indicator script with the clipboard contents.</p>' +
 		  '<p style="margin-bottom: 20px;"><a style="color: mediumblue;" target="_blank" href="https://google.com">Click here for full instructions</a></p>' +
-		  '<p style="color: white; font-size: 70%"; ">Levelator v' + VERSION + '</p>');
+		  '<p style="color: white; font-size: 70%"; ">The Levelator v' + VERSION + '</p>');
 	    return true;
 	} catch (error) {
 	    console.error(error.message);

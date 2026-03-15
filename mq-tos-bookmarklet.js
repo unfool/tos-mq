@@ -3,7 +3,7 @@
     var text,
 	result;
 
-    /* Attempt to get levels from various sources, in order */
+    /* Attempt to get levels from each source */
     /* First, try on the current page */
     text = document.querySelector('[data-command-slug="levels_tv_intraday"], [data-command-slug="bl_levels"]')
     ?.querySelector('.data-text')
@@ -11,12 +11,7 @@
     if (text && isValid(text)) return generateLevelsCodeAndPlaceOnClipboard(text, 'the levels found on the page');
 
     
-    /* Try selected text on the current page */
-    text = window.getSelection().toString().trim();
-    if (text && isValid(text)) return generateLevelsCodeAndPlaceOnClipboard(text, 'the selected text');
-
-    
-    /* We're still here, so try the clipboard, which needs to do the asynchronous dance */
+    /* Second, try the clipboard, which needs to do the asynchronous dance */
     navigator.clipboard
 	.readText()
 	.then((clipText) => (result = generateLevelsCodeAndPlaceOnClipboard(clipText, 'the clipboard')))
@@ -104,17 +99,20 @@
 
     
     async function writeClipboardText(text, source, isBlindSpotLevels) {
+	var backGroundColor = (isBlindSpotLevels) ? 'steelblue' : 'seagreen';
+	
 	try {
 	    await navigator.clipboard.writeText(text);
 	    toast('<h1 style="margin-bottom: 20px;">Success!</h1>' + 
 		  '<p style="margin-bottom: 20px;">Generated <span style="color: gold; font-weight: bold">' +
-		    (isBlindSpotLevels ? 'blind spot' : 'GEX') + '</span>' +
+		  (isBlindSpotLevels ? 'blind spot' : 'GEX') + '</span>' +
 		  ' levels code from ' + source + '.</p>' +
 		  '<p style="margin-bottom: 30px;">Replace the entire ToS <span style="color: gold; font-weight: bold">' +
 		  (isBlindSpotLevels ? 'mq_bl' : 'mq_gex') + '</span>' +
 		  ' indicator script with the clipboard contents.</p>' +
 		  '<p style="margin-bottom: 20px;"><a style="color: mediumblue;" target="_blank" href="https://google.com">Click here for full instructions</a></p>' +
-		  '<p style="color: white; font-size: 70%"; ">The Levelator v' + VERSION + '</p>');
+		  '<p style="color: white; font-size: 70%"; ">The Levelator v' + VERSION + '</p>',
+		  backGroundColor);
 	    return true;
 	} catch (error) {
 	    console.error(error.message);
@@ -124,7 +122,7 @@
     }
 
     
-    async function toast(text) {
+    async function toast(text, backGroundColor) {
 	const TOAST_ID = '__sourdough_toast__';
 	const DURATION = 12000;
 
@@ -142,7 +140,7 @@
 	    position: 'fixed', 
 	    top: '2%',
 	    left: '30%',
-	    background: 'steelblue',
+	    background: backGroundColor,
 	    color: 'white',
 	    padding: '10px 14px',
 	    borderRadius: '6px',

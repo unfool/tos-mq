@@ -1,5 +1,9 @@
 (function() {
-    const VERSION = '1.0.0';
+    const VERSION = '1.0.0',
+	  NEWLINE = String.fromCharCode(10),  /* Avoid minifier wrecking newlines in generated code  */
+	  DOUBLE_NEWLINE = NEWLINE + NEWLINE,
+	  SCRIPT_UPDATE_TIMESTAMP = new Date().toString();
+
     var text,
 	result;
 
@@ -8,16 +12,17 @@
     text = document.querySelector('[data-command-slug="levels_tv_intraday"], [data-command-slug="bl_levels"]')
     ?.querySelector('.data-text')
     ?.textContent.trim() ?? null;
-    if (text && isValid(text)) return generateLevelsCodeAndPlaceOnClipboard(text, 'the levels found on the page');
-
+    if (text && isValid(text)) {
+	return generateLevelsCodeAndPlaceOnClipboard(text, true);
+    }
     
     /* Second, try the clipboard, which needs to do the asynchronous dance */
     navigator.clipboard
 	.readText()
-	.then((clipText) => (result = generateLevelsCodeAndPlaceOnClipboard(clipText, 'the clipboard')))
+	.then((clipText) => (result = generateLevelsCodeAndPlaceOnClipboard(clipText, false)))
 	.catch((errorText) => (fail(errorText)));
     return result;
-    
+
 
     function fail(errorText) {
 	console.log(errorText);
@@ -32,8 +37,9 @@
     }
     
     
-    function generateLevelsCodeAndPlaceOnClipboard(text, source) {    
-	const COLORS = {'Call Resistance': 'LIGHT_RED',
+    function generateLevelsCodeAndPlaceOnClipboard(text, sourceIsWebPage) {    
+	const SOURCE_TEXT = (sourceIsWebPage) ? 'the levels found on the page' : 'the clipboard',
+	      COLORS = {'Call Resistance': 'LIGHT_RED',
 			'Put Support': 'GREEN',
 			'HVL': 'VIOLET',
 			'1D Min': 'ORANGE',
@@ -61,44 +67,148 @@
 			'BL 7': 'GREEN',
 			'BL 8': 'VIOLET',
 			'BL 9': 'ORANGE',
-			'BL 10': 'CYAN'},
-	      NEWLINE = String.fromCharCode(10),  /* Avoid minifier wrecking newlines in generated code  */
-	      DOUBLE_NEWLINE = NEWLINE + NEWLINE;
+			'BL 10': 'CYAN'};
 
 	var levels,
 	    isBlindSpotLevels,
+	    dataUpdatedAndRunNumber,
 	    i,
 	    result;
 
-	/* Static beginning of script */
-	result = 'def bars_in_future = 3;' + NEWLINE +
-	    'def show = !IsNaN(close[bars_in_future]) and IsNaN(close[bars_in_future - 1]);' + DOUBLE_NEWLINE;
-
 	/* Text not returned, or fails sanity checks. Notify of failure and exit. */
 	if (!(text && isValid(text))) {
-	    fail('No usable text found, selected, nor on the clipboard.' + DOUBLE_NEWLINE +
+	    fail('No usable text found on the web page nor on the clipboard.' + DOUBLE_NEWLINE +
 		 'Please reload the page and try again.' + DOUBLE_NEWLINE +
 		 'If you copied levels to the clipboard manually, you may need to copy them again before retrying.');
 	    return false;
 	}
 
+	
 	/* Parse the levels */
-	levels = text.slice(text.indexOf(':') + 2).replaceAll(NEWLINE, '').split(', '),
+	levels = text.slice(text.indexOf(':') + 2).replaceAll(NEWLINE, '').split(', ');
+
 	
+	/* Script generation */
 	isBlindSpotLevels = (levels[0].startsWith('BL'));
+
+	result = getUpdateDetails(isBlindSpotLevels, sourceIsWebPage, SOURCE_TEXT);
+
+	/* Add update and run number chart labels */
+	result += getUpdateChartLabels(isBlindSpotLevels, sourceIsWebPage);
+
+	/* Static beginning of script */
+	result += 'def bars_in_future = 3;' + NEWLINE +
+	    'def show = !IsNaN(close[bars_in_future]) and IsNaN(close[bars_in_future - 1]);' + DOUBLE_NEWLINE;
 	
+	/* Level lines and labels */
 	for (i = 0; i < levels.length; i += 2) {
 	    result += NEWLINE + 'def level' + i / 2 + ' = ' + levels[i + 1] + ';' + NEWLINE +
 		'plot plot' + i / 2 + ' = level' + i / 2 + ';' + NEWLINE +
 		'plot' + i / 2 + '.SetDefaultColor(Color.' + COLORS[levels[i]] + ');' + NEWLINE +
 		'AddChartBubble(show, level' + i / 2 + ', "' + levels[i] + '", Color.' + COLORS[levels[i]] + ');' + NEWLINE;
 	}
+
+	result += getUpdateDetails(isBlindSpotLevels, sourceIsWebPage, SOURCE_TEXT);
 	
-	return writeClipboardText(result, source, isBlindSpotLevels);
+	return writeClipboardText(result, SOURCE_TEXT, isBlindSpotLevels);
     }
 
     
-    async function writeClipboardText(text, source, isBlindSpotLevels) {
+    function getUpdateChartLabels(isBlindSpotLevels, sourceIsWebPage) {
+	const COLOR_STEEL_BLUE = '70, 130, 180',
+	      COLOR_SEA_GREEN = '46, 139, 87',
+	      COLOR = (isBlindSpotLevels) ? COLOR_STEEL_BLUE : COLOR_SEA_GREEN,
+	      DATA_UPDATED_AND_RUN_NUMBER = getLevelsDataAndRunNumber(isBlindSpotLevels);
+	var labelText = '',
+	    result;
+
+	labelText += (isBlindSpotLevels) ? 'Blind Spots ' : 'GEX levels ';
+	labelText += (sourceIsWebPage && DATA_UPDATED_AND_RUN_NUMBER.dataUpdated) ? DATA_UPDATED_AND_RUN_NUMBER.dataUpdated : 'N/A';
+
+	if (!isBlindSpotLevels) {
+	    labelText += ', run ';
+	    labelText += (sourceIsWebPage && DATA_UPDATED_AND_RUN_NUMBER.runNumber) ? DATA_UPDATED_AND_RUN_NUMBER.runNumber : 'N/A';
+	}
+
+	labelText += '  ';
+	
+	result = 'AddLabel(1, "' + labelText +
+	    '", CreateColor(' + COLOR + ')' +
+	    ', Location.TOP_LEFT' +
+	    ', FontSize.SMALL' +
+	    ', yes);' + DOUBLE_NEWLINE;
+	
+	return result;
+    }
+
+    function getUpdateDetails(isBlindSpotLevels, sourceIsWebPage, sourceText) {
+	const BLANK_COMMENT = String.fromCharCode(35) + NEWLINE,
+	      LEVELS_TYPE = (isBlindSpotLevels) ? 'Blind Spot' : 'GEX',
+	      INDICATOR = (isBlindSpotLevels) ? 'mq_blind_spots' : 'mq_gex',
+	      DATA_UPDATED_AND_RUN_NUMBER = getLevelsDataAndRunNumber(isBlindSpotLevels);
+	var result;
+
+	
+	result = BLANK_COMMENT +
+	    BLANK_COMMENT +
+	    '# The Levelator ' + 'v' + VERSION + NEWLINE +
+	    BLANK_COMMENT +
+	    '# ' + LEVELS_TYPE + ' levels' + NEWLINE + 
+	    BLANK_COMMENT +
+	    BLANK_COMMENT +
+	    '# Data retrieved for the ' + INDICATOR + ' indicator from ' + sourceText + '.' + NEWLINE +
+	    BLANK_COMMENT;
+
+	if (sourceIsWebPage) {
+	    if (DATA_UPDATED_AND_RUN_NUMBER.dataUpdated)
+		result += '# MenthorQ ' + LEVELS_TYPE + ' data updated: ' + DATA_UPDATED_AND_RUN_NUMBER.dataUpdated + NEWLINE;
+
+	    if (!isBlindSpotLevels && DATA_UPDATED_AND_RUN_NUMBER.runNumber)
+		result += '# MenthorQ GEX intraday levels current run: ' + DATA_UPDATED_AND_RUN_NUMBER.runNumber + NEWLINE;
+	} else {
+	    result += '# (MenthorQ update date and run number unavailable from clipboard levels.)' + NEWLINE;
+	}
+	
+	result += BLANK_COMMENT +
+	    '# Script last generated by bookmarklet: ' + SCRIPT_UPDATE_TIMESTAMP + NEWLINE +
+	    BLANK_COMMENT +
+	    BLANK_COMMENT;
+	
+	
+	/*window.alert(result);*/
+	return result;
+    }
+
+
+    function getLevelsDataAndRunNumber(isBlindSpotLevels) {
+	var commandCard,
+	    text,
+	    result = {dataUpdated: null,
+		      runNumber: null};
+
+	commandCard = document.querySelector('[data-command-slug="levels_tv_intraday"], [data-command-slug="bl_levels"]');
+	
+	/* Get data updated date */
+	/*text = commandCard*/
+	text = commandCard
+	?.querySelector('.actions-menu .description')
+	?.textContent.trim() ?? null;
+	result.dataUpdated = (text) ? text.slice(text.indexOf(':') + 2) : null;
+
+	/* Get current run number */
+   	if (!isBlindSpotLevels) {
+	    text = commandCard
+	    ?.querySelector('.current-run')
+	    ?.textContent.trim() ?? null;
+
+	    result.runNumber = (text) ? text.slice(text.indexOf(':') + 2) : null;
+	}
+	
+	return result;
+    }
+
+
+    async function writeClipboardText(text, sourceText, isBlindSpotLevels) {
 	var backGroundColor = (isBlindSpotLevels) ? 'steelblue' : 'seagreen';
 	
 	try {
@@ -106,9 +216,9 @@
 	    toast('<h1 style="margin-bottom: 20px;">Success!</h1>' + 
 		  '<p style="margin-bottom: 20px;">Generated <span style="color: gold; font-weight: bold">' +
 		  (isBlindSpotLevels ? 'blind spot' : 'GEX') + '</span>' +
-		  ' levels code from ' + source + '.</p>' +
+		  ' levels code from <span style="color: gold; font-weight: bold">' + sourceText + '</span>.</p>' +
 		  '<p style="margin-bottom: 30px;">Replace the entire ToS <span style="color: gold; font-weight: bold">' +
-		  (isBlindSpotLevels ? 'mq_bl' : 'mq_gex') + '</span>' +
+		  (isBlindSpotLevels ? 'mq_blind_spots' : 'mq_gex') + '</span>' +
 		  ' indicator script with the clipboard contents.</p>' +
 		  '<p style="margin-bottom: 20px;"><a style="color: mediumblue;" target="_blank" href="https://google.com">Click here for full instructions</a></p>' +
 		  '<p style="color: white; font-size: 70%"; ">The Levelator v' + VERSION + '</p>',

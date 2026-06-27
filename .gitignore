@@ -2,4 +2,7 @@
 *.org
 
 # Minified bookmarklet
-mq-tos-bookmarklet.min.js
+#
+# Commenting out to let this go to github until I maybe get github actions working
+#
+#mq-tos-bookmarklet.min.js

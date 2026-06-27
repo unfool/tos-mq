@@ -94,7 +94,7 @@
 	result = getUpdateDetails(isBlindSpotLevels, sourceIsWebPage, SOURCE_TEXT);
 
 	/* Add update and run number chart labels */
-	result += getUpdateChartLabels(isBlindSpotLevels, sourceIsWebPage);
+	result += getUpdateChartLabelCode(isBlindSpotLevels, sourceIsWebPage);
 
 	/* Static beginning of script */
 	result += 'def bars_in_future = 3;' + NEWLINE +
@@ -110,27 +110,17 @@
 
 	result += getUpdateDetails(isBlindSpotLevels, sourceIsWebPage, SOURCE_TEXT);
 	
-	return writeClipboardText(result, SOURCE_TEXT, isBlindSpotLevels);
+	return writeClipboardText(result, SOURCE_TEXT, isBlindSpotLevels, sourceIsWebPage);
     }
 
     
-    function getUpdateChartLabels(isBlindSpotLevels, sourceIsWebPage) {
+    function getUpdateChartLabelCode(isBlindSpotLevels, sourceIsWebPage) {
+	/* Return the chart label code for appropriate level type */
 	const COLOR_STEEL_BLUE = '70, 130, 180',
 	      COLOR_SEA_GREEN = '46, 139, 87',
-	      COLOR = (isBlindSpotLevels) ? COLOR_STEEL_BLUE : COLOR_SEA_GREEN,
-	      DATA_UPDATED_AND_RUN_NUMBER = getLevelsDataAndRunNumber(isBlindSpotLevels);
-	var labelText = '',
+	      COLOR = (isBlindSpotLevels) ? COLOR_STEEL_BLUE : COLOR_SEA_GREEN;
+	var labelText = getUpdateChartLabelText(isBlindSpotLevels, sourceIsWebPage),
 	    result;
-
-	labelText += (isBlindSpotLevels) ? 'Blind Spots ' : 'GEX levels ';
-	labelText += (sourceIsWebPage && DATA_UPDATED_AND_RUN_NUMBER.dataUpdated) ? DATA_UPDATED_AND_RUN_NUMBER.dataUpdated : 'N/A';
-
-	if (!isBlindSpotLevels) {
-	    labelText += ', run ';
-	    labelText += (sourceIsWebPage && DATA_UPDATED_AND_RUN_NUMBER.runNumber) ? DATA_UPDATED_AND_RUN_NUMBER.runNumber : 'N/A';
-	}
-
-	labelText += '  ';
 	
 	result = 'AddLabel(1, "' + labelText +
 	    '", CreateColor(' + COLOR + ')' +
@@ -140,6 +130,25 @@
 	
 	return result;
     }
+
+    function getUpdateChartLabelText(isBlindSpotLevels, sourceIsWebPage) {
+	/* Return the chart label text for appropriate level type */
+	const DATA_UPDATED_AND_RUN_NUMBER = getLevelsDataAndRunNumber(isBlindSpotLevels);
+	var result;
+
+	result = (isBlindSpotLevels) ? 'Blind Spots ' : 'GEX levels ';
+	result += (sourceIsWebPage && DATA_UPDATED_AND_RUN_NUMBER.dataUpdated) ? DATA_UPDATED_AND_RUN_NUMBER.dataUpdated : 'N/A';
+
+	if (!isBlindSpotLevels) {
+	    result += ', run ';
+	    result += (sourceIsWebPage && DATA_UPDATED_AND_RUN_NUMBER.runNumber) ? DATA_UPDATED_AND_RUN_NUMBER.runNumber : 'N/A';
+	}
+
+	result += '  ';
+
+	return result;
+    }
+
 
     function getUpdateDetails(isBlindSpotLevels, sourceIsWebPage, sourceText) {
 	const BLANK_COMMENT = String.fromCharCode(35) + NEWLINE,
@@ -208,21 +217,24 @@
     }
 
 
-    async function writeClipboardText(text, sourceText, isBlindSpotLevels) {
-	var backGroundColor = (isBlindSpotLevels) ? 'steelblue' : 'seagreen';
-	
+    async function writeClipboardText(text, sourceText, isBlindSpotLevels, sourceIsWebPage) {
+	/* Writes the code text to the clipboard and displays success/failure message */
+	var backGroundColor = (isBlindSpotLevels) ? 'steelblue' : 'seagreen',
+	    message = '';
+
 	try {
 	    await navigator.clipboard.writeText(text);
-	    toast('<h1 style="margin-bottom: 20px;">Success!</h1>' + 
-		  '<p style="margin-bottom: 20px;">Generated <span style="color: gold; font-weight: bold">' +
-		  (isBlindSpotLevels ? 'blind spot' : 'GEX') + '</span>' +
-		  ' levels code from <span style="color: gold; font-weight: bold">' + sourceText + '</span>.</p>' +
-		  '<p style="margin-bottom: 30px;">Replace the entire ToS <span style="color: gold; font-weight: bold">' +
-		  (isBlindSpotLevels ? 'mq_blind_spots' : 'mq_gex') + '</span>' +
-		  ' indicator script with the clipboard contents.</p>' +
-		  '<p style="margin-bottom: 20px;"><a style="color: mediumblue;" target="_blank" href="https://google.com">Click here for full instructions</a></p>' +
-		  '<p style="color: white; font-size: 70%"; ">The Levelator v' + VERSION + '</p>',
-		  backGroundColor);
+	    message =
+		'<h2 style="margin-bottom: 20px;">' + getUpdateChartLabelText(isBlindSpotLevels, sourceIsWebPage) + '</h2>' +
+		'<p style="margin-bottom: 20px;">Generated <span style="color: gold; font-weight: bold">' +
+		(isBlindSpotLevels ? 'blind spot' : 'GEX') + '</span>' +
+		' levels code from <span style="color: gold; font-weight: bold">' + sourceText + '</span>.</p>' +
+		'<p style="margin-bottom: 30px;">Replace the entire ToS <span style="color: gold; font-weight: bold">' +
+		(isBlindSpotLevels ? 'mq_blind_spots' : 'mq_gex') + '</span>' +
+		' indicator script with the clipboard contents.</p>' +
+		'<p style="margin-bottom: 20px;"><a style="color: mediumblue;" target="_blank" href="https://google.com">Click here for full instructions</a></p>' +
+		'<p style="color: white; font-size: 70%"; ">The Levelator v' + VERSION + '</p>';
+	    toast(message, backGroundColor);
 	    return true;
 	} catch (error) {
 	    console.error(error.message);

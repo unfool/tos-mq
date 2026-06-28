@@ -15,11 +15,11 @@ and appears as any other web site bookmark. *The Levelator*
 bookmarklet captures the levels from the MenthorQ web site and
 produces the indicator code that displays the levels in thinkorswim.
 ### What this is: PLEASE READ BEFORE USING
-This is a personal side project, with no warranty nor guarantee that it is suitable for use of any kind. Maybe you will find it useful for something.
+This is a personal side project, with no warranty nor guarantee that it is suitable for use of any kind.
 
-I am not affiliated with MenthorQ beyond being a very satisfied customer. They may change their web site at any time without warning and break these tools. I hope I will be able keep this working and useful at least for myself, but I cannot predict the future.
+I am not affiliated with MenthorQ beyond being a very satisfied customer. **They may change their web site at any time without warning and break these tools.** I hope I will be able keep this project working as I use it many times daily, but I cannot predict the future.
 
-This is certainly not any form of financial advice as I have no credentials for that.
+Nothing here constitutes any form of financial advice as I have no credentials for any of that. Maybe you will find this entertaining, educational, or otherwise useful for some personal purpose I cannot recommend nor predict.
 
 Thank you for reading! Let's get started!
 ## Adding the thinkorswim indicators
@@ -86,8 +86,3 @@ previous trading session**.
 7. With the text selected, press CTRL-v to paste the clipboard contents
 8. Click OK to close the indicator script
 9. Click OK to close the studies window
-
-## Notes on using the indicators
-### The bubble labels
-
-

@@ -1,4 +1,5 @@
 # The Levelator
+![Levelator sample image](assets/images/tos-mq-sample-fs8.png)
 ## Description
 MenthorQ provides indicators and levels data for use in TradingView.
 *The Levelator* generates code for analogous indicators that use the

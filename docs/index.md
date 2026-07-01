@@ -3,8 +3,9 @@
 ## Description
 MenthorQ provides indicators and levels data for use in TradingView.
 *The Levelator* generates code for analogous indicators that use the
-MenthorQ levels data on the *thinkorswim* platform. Updating
-the levels is easy!
+MenthorQ levels data on the *thinkorswim* platform.
+
+Updating the levels is easy. It becomes very quick after you've done it a time or two.
 
 Only two steps are needed to get started:
 1. Add two shared indicators to *thinkorswim*

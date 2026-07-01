@@ -52,38 +52,52 @@ bookmarks bar of your browser window:
 Use these steps to update each indicator. You should have the chart open
 where you want them updated, and you should already have the indicators
 added to the chart.
+
 ### GEX levels (mq_gex)
 GEX level data are updated throughout the trading day by MenthorQ. Use
 these steps to update the indicator as often as you wish.
 
-1. Navigate to the *Indices & Stocks > Intraday* section of the MenthorQ web site
-2. Make sure you have the *TradingView Levels Intraday* block (Command) on the page
+(Note that where CTRL keys are mentioned, these work in both Windows and macOS. You may also use the *command* key instead on macOS, which is generally more convenient.)
+
+1. Navigate to the *Indices & Stocks > Intraday* section of the MenthorQ web site.
+2. Make sure you have the *TradingView Levels Intraday* block (Command) on the page.
+   ![Indices & Stocks > Intraday](assets/images/mq-gex-01-02-intraday-tv-fs8.png)
 3. Click *The Levelator* bookmarklet to capture the GEX levels to the
-   clipboard. 
+   clipboard.
+   ![Click the bookmarklet](assets/images/mq-gex-03-click-bookmarklet-fs8.png)
 4. In *thinkorswim*, click the *Edit studies* icon in the toolbar. (It
    looks like an Erlenmeyer flask used in a chemistry lab.)
+   ![Click the flask](assets/images/mq-gex-04-flask-fs8.png)
 5. Locate the *mq_gex* study in the list, and click the script icon to
    the left of the name.
-6. Click within the script so you see a cursor
-7. Press CTRL-a to select ALL of the script
-8. With the text selected, press CTRL-v to paste the clipboard contents
-9. Click OK to close the indicator script
-10. Click OK to close the studies window
+   ![Click the script icon](assets/images/mq-gex-05-script-icon-fs8.png)
+6. Click within the script so you see a cursor.
+   ![Click in the script](assets/images/mq-gex-06-script-click-fs8.png)
+7. Press CTRL-a to select ALL of the script.
+   ![Press CTRL-a](assets/images/mq-gex-07-script-selected-fs8.png)
+8. With the text selected, press CTRL-v to paste the clipboard contents.
+   ![Press CTRL-v](assets/images/mq-gex-08-script-pasted-fs8.png)
+9. Click OK to close the indicator script.
+   ![Close the script](assets/images/mq-gex-09-ok-script-close-fs8.png)
+10. Click OK to close the studies window.
+	![Close the studies window](assets/images/mq-gex-10-ok-studies-close-fs8.png)
 
 ### Blind spots (mq_blind_spots)
 Blind spots are updated by MenthorQ **once per day**, after the end of the
 trading session. The most recent data will have the date from **the
 previous trading session**.
 
-1. Navigate to the *Indices & Stocks > End Of Day* section of the MenthorQ web site
-2. Make sure you have the *Blind Spots Levels* block (Command) on the page
+This is nearly the exact process as the above. The differences are the MenthorQ page where you capture the levels, the indicator you update, and needing to perform the update only once per day.
+
+1. Navigate to the *Indices & Stocks > End Of Day* section of the MenthorQ web site.
+2. Make sure you have the *Blind Spots Levels* block (Command) on the page.
 3. Click *The Levelator* bookmarklet to capture the blind spot levels to the clipboard.
 4. In *thinkorswim*, click the *Edit studies* icon in the toolbar. (It
    looks like an Erlenmeyer flask used in a chemistry lab.)
 5. Locate the *mq_blind_spots* study in the list, and click the script icon to
    the left of the name.
-6. Click within the script so you see a cursor
-7. Press CTRL-a to select ALL of the script
-8. With the text selected, press CTRL-v to paste the clipboard contents
-9. Click OK to close the indicator script
-10. Click OK to close the studies window
+6. Click within the script so you see a cursor.
+7. Press CTRL-a to select ALL of the script.
+8. With the text selected, press CTRL-v to paste the clipboard contents.
+9. Click OK to close the indicator script.
+10. Click OK to close the studies window.

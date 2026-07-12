@@ -1,11 +1,12 @@
 # The Levelator
+**v2.0.0**
 ![Levelator sample image](assets/images/tos-mq-sample-fs8.png)
 ## Description
 MenthorQ provides indicators and levels data for use in TradingView.
 *The Levelator* generates code for analogous indicators that use the
-MenthorQ levels data on the *thinkorswim* platform.
+MenthorQ data to display levels on the *thinkorswim* platform.
 
-Updating the levels is easy. It becomes very quick after you've done it a time or two.
+Updating the levels is QUICK and EASY. These instructions may appear long, but it's just including precise detail and screen captures. Updating becomes very quick after you've done it a couple of times.
 
 Only two steps are needed to get started:
 1. Add two shared indicators to *thinkorswim*
@@ -52,53 +53,78 @@ bookmarks bar of your browser window:
 ## Updating the indicators
 Use these steps to update each indicator. You should have the chart open
 where you want them updated, and you should already have the indicators
-added to the chart.
+added to a chart.
 
-### GEX levels (mq_gex)
-GEX level data are updated throughout the trading day by MenthorQ. Use
+### GEX intraday levels (mq_gex)
+GEX intraday level data are updated throughout the trading day by MenthorQ. Use
 these steps to update the indicator as often as you wish.
 
 (Note that where CTRL keys are mentioned, these work in both Windows and macOS. You may also use the *command* key instead on macOS, which is generally more convenient.)
 
-1. Navigate to the *Indices & Stocks > Intraday* section of the MenthorQ web site.
-2. Make sure you have the *TradingView Levels Intraday* block (Command) on the page.
-   ![Indices & Stocks > Intraday](assets/images/mq-gex-01-02-intraday-tv-fs8.png)
-3. Click *The Levelator* bookmarklet to capture the GEX levels to the
-   clipboard.
-   ![Click the bookmarklet](assets/images/mq-gex-03-click-bookmarklet-fs8.png)
-4. In *thinkorswim*, click the *Edit studies* icon in the toolbar. (It
+1. Navigate to the MenthorQ dashboard.
+2. In the navigator on the left, click *Levels*.
+   ![Click Levels](assets/images/mq-gex-02-mq-levels-fs8.png)
+3. Click the *Select Tickers* field, and choose **ONE** ticker only (such as *SPX).
+4. Change the *Type* pop-up menu just below, to *Gamma Levels Intraday* (it defaults to Gamma Levels EOD, which is not what we want).
+5. Click *Search*.
+   ![Click Levels](assets/images/mq-gex-03-04-05-search-levels-fs8.png)
+6. After the levels data appear, click *The Levelator* bookmarklet to capture the GEX levels to the clipboard. A green confirmation will be displayed.
+   ![Click the bookmarklet](assets/images/mq-gex-06-click-bookmarklet-fs8.png)
+7. In *thinkorswim*, click the *Edit studies* icon in the toolbar. (It
    looks like an Erlenmeyer flask used in a chemistry lab.)
    ![Click the flask](assets/images/mq-gex-04-flask-fs8.png)
-5. Locate the *mq_gex* study in the list, and click the script icon to
+8. Locate the *mq_gex* study in the list, and click the script icon to
    the left of the name.
    ![Click the script icon](assets/images/mq-gex-05-script-icon-fs8.png)
-6. Click within the script so you see a cursor.
+9. Click within the script so you see a cursor.
    ![Click in the script](assets/images/mq-gex-06-script-click-fs8.png)
-7. Press CTRL-a to select ALL of the script.
+10. Press CTRL-a to select ALL of the script.
    ![Press CTRL-a](assets/images/mq-gex-07-script-selected-fs8.png)
-8. With the text selected, press CTRL-v to paste the clipboard contents.
+11. With the text selected, press CTRL-v to paste the clipboard contents.
    ![Press CTRL-v](assets/images/mq-gex-08-script-pasted-fs8.png)
-9. Click OK to close the indicator script.
+12. Click OK to close the indicator script.
    ![Close the script](assets/images/mq-gex-09-ok-script-close-fs8.png)
-10. Click OK to close the studies window.
+13. Click OK to close the studies window.
 	![Close the studies window](assets/images/mq-gex-10-ok-studies-close-fs8.png)
 
 ### Blind spots (mq_blind_spots)
 Blind spots are updated by MenthorQ **once per day**, after the end of the
 trading session. The most recent data will have the date from **the
-previous trading session**.
+previous trading session**. You will see this reflected on the datestamp below the data on the MenthorQ dashboard, and on the thinkorswim chart.
 
-This is nearly the exact process as the above. The differences are the MenthorQ page where you capture the levels, the indicator you update, and needing to perform the update only once per day.
+This is nearly the exact process as for the intraday levels. Follow the same process as above, with these differences.
 
-1. Navigate to the *Indices & Stocks > End Of Day* section of the MenthorQ web site.
-2. Make sure you have the *Blind Spots Levels* block (Command) on the page.
-3. Click *The Levelator* bookmarklet to capture the blind spot levels to the clipboard.
-4. In *thinkorswim*, click the *Edit studies* icon in the toolbar. (It
-   looks like an Erlenmeyer flask used in a chemistry lab.)
-5. Locate the *mq_blind_spots* study in the list, and click the script icon to
-   the left of the name.
-6. Click within the script so you see a cursor.
-7. Press CTRL-a to select ALL of the script.
-8. With the text selected, press CTRL-v to paste the clipboard contents.
-9. Click OK to close the indicator script.
-10. Click OK to close the studies window.
+- In step 4, choose the *Blindspots* type on the MenthorQ dashboard.
+- Confirmation for *The Levelator* is blue.
+- In step 8, choose the *mq_blind_spots* study in thinkorswim.
+- You need to update the blind spots only once per trading session.
+## Other notes
+### Efficiently updating intraday levels
+After you query the intraday levels, you may leave your browser window open to the Levels page. Each time you want to check for a new update, click the *Search* button again to refresh. (If you reload entire the page, you will need to complete the form again.)
+
+The timestamp at the bottom will show when the data was generated by MenthorQ, and you may compare that with the date indicated on the thinkorswim chart.
+### Updating *The Levelator* bookmarklet
+The Levelator is viewed as feature-complete. Updates to the bookmarklet are expected to be infrequent, and generally consist of only minor improvements.
+
+If a new version is needed due to breaking changes on the MenthorQ web site, it is easy enough to update.
+
+1. Right-click *The Levelator* in your bookmarks bar, and click *Delete*.
+2. Drag the new bookmarklet link from the *Adding the bookmarklet* section above to your bookmarks bar.
+
+The current version number appears at the top of these instructions. Your version appears on the confirmation when using *The Levelator*, and in the actual script pasted to each indicator.
+
+The shared indicators themselves should require no updates.
+### The clipboard workaround
+*The Levelator*'s automated capture of level data directly from the MenthorQ web site is the intended and quickest method of use. A backup method is provided and useful for some outlier situations, such as:
+
+- The MenthorQ data is not loading on their web site during market peaks. One trader who gets the data loaded may share the raw data with others in a chat.
+- The MenthorQ web site has been updated with a breaking change, and *The Levelator* has not yet been updated to automatically capture the level data.
+
+#### Using the clipboard to capture level data
+1. Copy the level data manually to your clipboard.
+2. Click *The Levelator* bookmarklet.
+3. Follow the rest of the instructions above for updating the indicator.
+
+You may get a prompt asking to access the clipboard. The browser is protecting your clipboard from being read without your permission. For *The Levelator* to work, you must allow this clipboard access.
+
+Note that the level data update time is not available when using this method.

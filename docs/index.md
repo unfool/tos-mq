@@ -42,7 +42,7 @@ you are unfamiliar with that process. Jeff is demonstrating the import of a char
 ## Adding the bookmarklet
 I am using Google Chrome, so all instructions and development are
 done on that browser. It should work similarly on other browsers,
-though no testing has been performed on those other than Google Chrome.
+though no testing has been performed on browsers other than Google Chrome.
 
 1. Show the bookmarks bar, if it does not already appear. Under the
    *View* menu, choose *Always Show Bookmarks Bar*.
@@ -110,6 +110,7 @@ If a new version is needed due to breaking changes on the MenthorQ web site, it 
 
 1. Right-click *The Levelator* in your bookmarks bar, and click *Delete*.
 2. Drag the new bookmarklet link from the *Adding the bookmarklet* section above to your bookmarks bar.
+3. If you currently have the MenthorQ levels page open, refresh it after adding the new bookmarklet.
 
 The current version number appears at the top of these instructions. Your version appears on the confirmation when using *The Levelator*, and in the actual script pasted to each indicator.
 

@@ -12,6 +12,8 @@ Only two steps are needed to get started:
 1. Add two shared indicators to *thinkorswim*
 2. Add a bookmarklet to your web browser
 
+All of the detail is below, but [here is a video that goes through the basics of getting started](https://youtu.be/BtaZHKn82x0).
+
 ### What's a *bookmarklet*?
 A bookmarklet is a piece of code that is executed in the web browser,
 and appears as any other web site bookmark. *The Levelator*
